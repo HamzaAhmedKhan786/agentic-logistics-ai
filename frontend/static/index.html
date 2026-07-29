@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Agentic logistics planning dashboard">
+  <title>RouteMind — Agentic Logistics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.7.3/dist/maplibre-gl.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <a class="brand" href="/">
+        <span class="brand-mark"><i></i><i></i><i></i></span>
+        <span>Route<span class="brand-accent">Mind</span></span>
+      </a>
+      <div class="header-right">
+        <a class="api-link" href="/docs" target="_blank">API docs ↗</a>
+        <div class="status"><span class="pulse"></span><span id="provider">Checking system</span></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow"><span></span>MULTI-AGENT LOGISTICS ORCHESTRATION</p>
+          <h1>Plan delivery routes.<br><em>Watch the agents reason.</em></h1>
+          <p class="lede">A transparent planning workspace where specialized agents build, validate, and refine fleet routes.</p>
+          <div class="hero-pills">
+            <span>Constraint-aware</span><span>Auditable</span><span>LLM-powered</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">⌁</div>
+          <span>LIVE WORKFLOW</span>
+          <strong>8 workflow nodes</strong>
+          <small>Plan → Execute → Weather → Disruptions → Traffic → Reflect → Replan → Finalize</small>
+          <div class="agent-dots"><i>P</i><i>E</i><i>W</i><i>D</i><i>T</i><i>R</i><i>R</i><i>F</i></div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <form id="plan-form" class="panel input-panel">
+          <div class="panel-glow"></div>
+          <div class="panel-heading">
+            <div><span class="step">01</span><h2>Mission brief</h2></div>
+            <span class="hint">Demo data is editable</span>
+          </div>
+
+          <label>Optimization objective
+            <input id="objective" value="Minimize distance while respecting vehicle capacity">
+          </label>
+
+          <div class="two-col">
+            <label>Depot name<input id="depot-name" value="Berlin Hub"></label>
+            <label>Depot address<input id="depot-address" value="Alexanderplatz, Berlin"></label>
+          </div>
+
+          <div class="subhead"><h3>Delivery stops</h3><button type="button" id="add-stop">+ Add stop</button></div>
+          <div id="stops"></div>
+
+          <div class="subhead"><h3>Fleet</h3><button type="button" id="add-vehicle">+ Add vehicle</button></div>
+          <div id="vehicles"></div>
+
+          <button class="primary" type="submit"><span>Run agent workflow</span><span>→</span></button>
+        </form>
+
+        <section class="panel result-panel">
+          <div class="panel-glow panel-glow-right"></div>
+          <div class="panel-heading">
+            <div><span class="step">02</span><h2>Agent run</h2></div>
+            <span id="run-status" class="badge idle">READY</span>
+          </div>
+          <div id="empty" class="empty">
+            <div class="orbit"><span></span><i></i></div>
+            <h3>Ready to orchestrate</h3>
+            <p>Submit the mission brief to see agent decisions, route metrics, and validation results.</p>
+          </div>
+          <div id="results" class="hidden">
+            <div id="summary" class="summary"></div>
+            <div class="metrics" id="metrics"></div>
+            <div id="weather"></div>
+            <div class="route-canvas" id="route-canvas">
+              <div class="canvas-grid"></div>
+              <div id="free-map"></div>
+              <svg id="route-map" viewBox="0 0 600 220" preserveAspectRatio="none" aria-label="Animated route network"></svg>
+              <div class="canvas-label"><span>ROUTE NETWORK</span><small>Click a vehicle to animate</small></div>
+            </div>
+            <h3 class="section-label">Agent timeline</h3>
+            <div id="timeline" class="timeline"></div>
+            <h3 class="section-label">Vehicle routes</h3>
+            <div id="routes"></div>
+            <div id="disruptions"></div>
+            <div id="issues"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.7.3/dist/maplibre-gl.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

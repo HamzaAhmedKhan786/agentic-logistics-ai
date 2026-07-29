@@ -1,0 +1,55 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Plan runs",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"expr": "sum(logistics_plan_runs_total)", "refId": "A"}],
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 0}
+    },
+    {
+      "type": "timeseries",
+      "title": "Workflow latency",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"expr": "histogram_quantile(0.95, sum(rate(logistics_plan_duration_seconds_bucket[5m])) by (le))", "refId": "A"}],
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 0}
+    },
+    {
+      "type": "stat",
+      "title": "Active traffic monitors",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"expr": "logistics_active_traffic_monitors", "refId": "A"}],
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 0}
+    },
+    {
+      "type": "timeseries",
+      "title": "Replans by reason",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"expr": "sum by (reason) (rate(logistics_replans_total[5m]))", "refId": "A"}],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+    },
+    {
+      "type": "timeseries",
+      "title": "Agent calls",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"expr": "sum by (agent, result) (rate(logistics_agent_calls_total[5m]))", "refId": "A"}],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+    },
+    {
+      "type": "stat",
+      "title": "Latest DeepEval score",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"expr": "logistics_llm_eval_score", "refId": "A"}],
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 16}
+    }
+  ],
+  "schemaVersion": 41,
+  "tags": ["agentic-ai", "logistics"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "title": "RouteMind Operations",
+  "uid": "route-mind-ops",
+  "version": 1
+}

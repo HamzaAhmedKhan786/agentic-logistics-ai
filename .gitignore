@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.deepeval/
+.pytest-deepeval/
+.venv/
+.env
+*.db
+*.sqlite
+*.sqlite3
+*.log
+.coverage
+htmlcov/
+output/*
+!output/.gitkeep
