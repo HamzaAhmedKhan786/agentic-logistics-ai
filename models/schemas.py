@@ -151,6 +151,7 @@ class PlanResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str
+    orchestrator: str = "langgraph"
     llm_provider: str
     llm_enabled: bool
     location_provider: str

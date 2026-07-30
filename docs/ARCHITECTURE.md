@@ -12,7 +12,7 @@ deterministic domain capabilities.
 | Layer | Modules | Responsibility |
 |---|---|---|
 | Delivery | `app.py`, `frontend/static/` | HTTP API, validation boundary, user interface |
-| Orchestration | `graph/` | Workflow order, branching, retry budget, checkpoints |
+| Orchestration | `graph/` | Compiled LangGraph, conditional edges, retry budget, fallback checkpoints |
 | Reasoning | `agents/` | Plan, execute, observe weather/disruptions, reflect, replan, summarize |
 | Domain | `models/`, `validators/` | State, contracts, invariants, feasibility |
 | Capabilities | `tools/` | Geocoding, routing, fleet assignment, policy retrieval, Tavily search, current weather |
@@ -35,6 +35,8 @@ flowchart TD
 - Agent code accesses external intelligence through `config.llm.LLMClient`.
 - Tools return typed domain objects.
 - Workflow code owns agent ordering and conditional transitions.
+- LangGraph owns runtime node execution and the reflection-to-replanner/finalizer
+  branch; domain agents remain framework-light async functions.
 - Delivery code translates transport failures into HTTP responses.
 
 ## Agent responsibilities
@@ -83,6 +85,16 @@ recovery decision from the LLM. Only allowlisted recovery actions are applied.
 ### Finalizer
 
 Produces a stable user-facing status and summary from verified state.
+
+## Why LangGraph but not the LangChain package?
+
+LangGraph is the appropriate orchestration layer for the stateful agent loop. The
+application uses its `StateGraph`, `START`/`END` boundaries, async invocation, and
+conditional edges. The higher-level LangChain package is not required for
+OR-Tools, map providers, weather, traffic, Tavily, or deterministic validators.
+`langchain-core` is present as a LangGraph dependency. Full LangChain components
+should be introduced only for document ingestion, embeddings, vector retrieval,
+and cited policy RAG.
 
 ## Storage
 

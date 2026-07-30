@@ -63,7 +63,7 @@ document.querySelector("#add-vehicle").onclick = () => vehicleRow();
 
 fetch("/api/health").then(r => r.json()).then(data => {
   document.querySelector("#provider").textContent =
-    `${data.llm_provider.toUpperCase()} LLM · ${data.routing_provider.toUpperCase()} roads · ${data.llm_enabled ? "enabled" : "fallback"}`;
+    `${(data.orchestrator || "workflow").toUpperCase()} · ${data.llm_provider.toUpperCase()} LLM · ${data.routing_provider.toUpperCase()} roads · ${data.llm_enabled ? "enabled" : "fallback"}`;
 }).catch(() => document.querySelector("#provider").textContent = "API unavailable");
 
 function payload() {

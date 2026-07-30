@@ -163,6 +163,11 @@ GET /api/plans/{run_id}/events
 Accept: text/event-stream
 ```
 
+The planning loop is implemented with a compiled LangGraph `StateGraph`. Current
+approval persistence remains in the application repository. A production upgrade
+should add `langgraph-checkpoint-postgres`, compile with its async saver, and move
+approval to a LangGraph interrupt/resume cycle.
+
 ## Production leftovers
 
 The current background monitor uses in-process asyncio tasks. Before horizontal

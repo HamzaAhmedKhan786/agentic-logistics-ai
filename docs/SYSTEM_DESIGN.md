@@ -29,7 +29,7 @@ provider-independent, testable without an LLM, and safe against infeasible plans
 flowchart TB
     User["Dispatcher"] --> UI["Web dashboard"]
     UI --> API["FastAPI service"]
-    API --> Orchestrator["Workflow orchestrator"]
+    API --> Orchestrator["LangGraph StateGraph"]
     Orchestrator --> Agents["Specialized agents"]
     Agents --> LLM["LLM provider adapter"]
     Agents --> Tools["Routing / fleet / geocoding / weather / Tavily tools"]
@@ -45,7 +45,8 @@ and validators determine capacity, distance, and feasibility.
 ## 3. Request lifecycle
 
 1. FastAPI validates the request with Pydantic.
-2. The planner retrieves relevant policies and proposes a strategy.
+2. LangGraph invokes the planner, which retrieves relevant policies and proposes
+   a strategy.
 3. The executor geocodes stops, assigns them by capacity, orders each route, and
    calculates route metrics.
 4. The weather agent retrieves current Berlin conditions and applies deterministic
@@ -54,7 +55,8 @@ and validators determine capacity, distance, and feasibility.
    weather alerts, strikes, and logistics disruption reports.
 6. The traffic agent applies synthetic congestion or consumes provider traffic.
 7. The reflection agent evaluates deterministic validation results.
-8. The replanner adjusts the route while the retry budget remains.
+8. A LangGraph conditional edge routes to the replanner while the retry budget
+   remains, otherwise it routes to the finalizer.
 9. The finalizer produces status and summary.
 10. The service writes a durable database record plus a fallback checkpoint and
     returns the result.

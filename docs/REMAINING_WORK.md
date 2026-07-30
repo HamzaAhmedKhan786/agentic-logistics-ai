@@ -14,6 +14,7 @@ production logistics system.
 - Structured JSON logs and Prometheus metrics
 - Provisioned Grafana dashboard
 - Deterministic agent tests and opt-in DeepEval/Groq judge tests
+- Compiled LangGraph `StateGraph` with conditional replanning
 
 ## 1. Industrial road geometry validation
 
@@ -61,13 +62,18 @@ larger vehicles.
 ## 5. Durable workflow execution
 
 **Current state:** durable SQL storage and in-process monitoring exist.
+LangGraph owns the in-request state machine, but it is currently compiled without
+a durable LangGraph checkpointer.
 
 **How to achieve it:**
 
 1. Normalize runs, routes, observations, approvals, events, and versions.
 2. Add Redis plus Celery, Dramatiq, or another job worker.
-3. Make workflow nodes idempotent.
-4. Add cancellation and retry controls.
+3. Add `langgraph-checkpoint-postgres` and a stable thread ID per run.
+4. Make workflow nodes idempotent for checkpoint replay.
+5. Move dispatcher approval to a LangGraph `interrupt()` and resume with
+   `Command(resume=...)`.
+6. Add cancellation and retry controls.
 
 ## 6. Real RAG and Tavily research
 

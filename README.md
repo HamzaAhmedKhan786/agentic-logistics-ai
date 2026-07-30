@@ -12,6 +12,7 @@ deterministic in every mode.
 ## What is included
 
 - FastAPI backend with typed request/response models
+- LangGraph `StateGraph` orchestration with conditional replanning edges
 - Planner, executor, weather, disruption-research, traffic, reflection, replanner,
   and finalizer agents
 - Geocoding, fleet assignment, routing, policy retrieval, and tool registry
@@ -76,6 +77,20 @@ OPENAI_API_KEY=your-key
 The LLM proposes a planning strategy; assignments, distance calculations, and
 constraint validation remain implemented as deterministic tools. This split is
 important for reliability and testability.
+
+## LangGraph orchestration
+
+The production request path is compiled from a LangGraph `StateGraph` in
+`graph/workflow.py`. Each existing agent is a graph node, `LogisticsState` is the
+shared typed state, and the reflection node conditionally routes to either the
+replanner or finalizer. The retry loop is therefore executed by LangGraph rather
+than by a handwritten `while` loop.
+
+This project does not install the high-level `langchain` package. LangGraph brings
+`langchain-core` as a dependency, but routing, OR-Tools, weather, Tavily, traffic,
+and validators remain focused Python domain tools. Add LangChain selectively when
+the policy RAG subsystem gains document loaders, embeddings, and a vector-store
+retriever.
 
 ## Real geocoding and road routes
 
@@ -235,7 +250,7 @@ agentic-logistics-ai/
 ├── services/                 # Event streaming and traffic monitoring
 ├── storage/                  # SQLAlchemy persistence repository
 ├── validators/               # Safety and feasibility checks
-├── graph/                    # Workflow, conditional routing, checkpoints
+├── graph/                    # LangGraph workflow, conditional routing, checkpoints
 ├── visualization/            # Diagram and timeline helpers
 ├── frontend/static/          # Dashboard HTML, CSS, and JavaScript
 ├── docs/                     # Design, setup, roadmap, and screenshots
@@ -266,7 +281,8 @@ pytest -q
 python visualize.py
 ```
 
-`visualize.py` writes Mermaid source to `output/workflow.mmd`.
+`visualize.py` exports Mermaid directly from the compiled LangGraph to
+`output/workflow.mmd`.
 
 ## Current scope and production roadmap
 

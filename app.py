@@ -60,6 +60,7 @@ async def index() -> FileResponse:
 async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
+        orchestrator="langgraph",
         llm_provider=llm.provider,
         llm_enabled=llm.enabled,
         location_provider=settings.location_provider,
